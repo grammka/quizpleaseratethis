@@ -1,0 +1,40 @@
+$game-table-border-color    = #c2cad2
+$game-td-border-color       = #dce3ea
+
+
+.title
+  margin-bottom: 20px
+  font-size: 26px
+  color #bddcfd
+
+.table
+  width: 100%
+  background-color: #fff
+  border-spacing 0
+  overflow: hidden
+  cursor: default
+  font-size: 13px
+  text-align: left
+  border-radius 3px
+  box-shadow rgba(13, 44, 74, 0.48) 0 0 1px, rgba(13, 44, 74, 0.12) 0 1px 1px
+  no-select()
+  tbody
+    tr
+      &:nth-child(even)
+        background-color: #F7F9FA
+      &:hover
+        background-color: #fff9de
+        td
+          border-color #ece8c8
+  td, th
+    border-left 1px solid $game-td-border-color
+    padding 10px
+    vertical-align middle
+    text-align: center
+    &:first-child
+      border-left: 0
+  th
+    border-bottom: 1px solid $game-td-border-color
+    font-weight: 600
+  td
+    line-height: 15px

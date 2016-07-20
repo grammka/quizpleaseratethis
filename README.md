@@ -1,2 +1,2 @@
-# quizpleaseratethis
-Rating for Quiz Please game
+# quiz-please-team-rating
+Team average % points calculator
