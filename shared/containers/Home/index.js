@@ -7,6 +7,7 @@ import Center from 'components/Center'
 import Indent from 'components/Indent'
 import TeamsPositionTable from 'components/TeamsPositionTable'
 import GameTable from 'components/GameTable'
+import EditGameTable from 'components/EditGameTable'
 
 
 @CSSModules(style)
@@ -46,6 +47,18 @@ export default class Home extends React.Component {
       <Center>
         <Indent pt={30} pb={50}>
           <TeamsPositionTable data={ teamsData } showMore />
+
+          <Indent mt={40}>
+            {
+              [1].map((game, index) => {
+                return (
+                  <Indent key={ index } mt={ index && 40 }>
+                    <EditGameTable data={ gameData } />
+                  </Indent>
+                )
+              })
+            }
+          </Indent>
 
           <Indent mt={40}>
             {

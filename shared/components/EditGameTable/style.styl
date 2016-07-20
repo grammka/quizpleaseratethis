@@ -8,13 +8,12 @@ $game-td-border-color       = #dce3ea
   color #bddcfd
 
 .tableContainer
-  overflow: hidden
+  background-color: #fff
   border-radius 3px
   box-shadow rgba(13, 44, 74, 0.25) 0 0 0 1px, rgba(13, 44, 74, 0.14) 0 1px 0 1px
 
 .table
   width: 100%
-  background-color: #fff
   border-spacing 0
   cursor: default
   font-size: 13px
@@ -24,13 +23,14 @@ $game-td-border-color       = #dce3ea
     tr
       &:nth-child(even)
         background-color: #F7F9FA
-      &:hover
-        background-color: #fff9de
-        td
-          border-color #ece8c8
+      &:last-child
+      	td
+          &:first-child
+          	border-radius 0 0 0 3px
+          &:last-child
+            border-radius 0 0 3px 0
   td, th
     border-left 1px solid $game-td-border-color
-    padding 10px
     vertical-align middle
     text-align: center
     &:first-child
@@ -39,6 +39,16 @@ $game-td-border-color       = #dce3ea
       text-align: left
   th
     border-bottom: 1px solid $game-td-border-color
+    padding 10px
     font-weight: 600
   td
     line-height: 15px
+  :global(.Select-control)
+    background: none !important
+    border 0 !important
+    box-shadow none !important
+
+.input
+  background: none !important
+  border 0 !important
+  text-align: center

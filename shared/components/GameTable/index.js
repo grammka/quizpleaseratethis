@@ -28,9 +28,9 @@ const GameTable = CSSModules((props) => (
             return (
               <tr key={ index }>
                 {
-                  itemData.map((value, valueIndex) => {
+                  itemData.map((value, index) => {
                     return (
-                      <td key={ valueIndex }>{ value }</td>
+                      <td key={ index }>{ value }</td>
                     )
                   })
                 }

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { Router, browserHistory } from 'react-router'
 import routes from 'routes'
 
+import 'react-select/dist/react-select.css'
 import 'normalize.css/normalize.css'
 import 'assets/styl/index.styl'
 import 'assets/images/big_logo.png'

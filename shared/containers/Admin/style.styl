@@ -1,0 +1,31 @@
+$border-color = #333
+
+
+.table
+  width: 100%
+  background-color: #fff
+  border 1px solid $border-color
+  border-spacing 0
+  overflow: hidden
+  cursor: default
+  font-size: 13px
+  text-align: left
+  no-select()
+  td, th
+    border-left 1px solid $border-color
+    border-top: 1px solid $border-color
+    vertical-align middle
+    text-align: center
+    &:first-child
+      border-left: 0
+      border-top: 0
+    &:nth-child(2)
+      text-align: left
+  th
+    padding 10px
+    font-weight: 600
+  td
+    line-height: 15px
+
+.input
+  border 0 !important
