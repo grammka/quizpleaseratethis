@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Router, browserHistory } from 'react-router'
 import routes from 'routes'
+import store from 'core/store'
 
 import 'react-select/dist/react-select.css'
 import 'normalize.css/normalize.css'

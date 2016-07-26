@@ -1,4 +1,5 @@
 import React from 'react'
+import actions from 'core/actions'
 
 import CSSModules from 'react-css-modules'
 import style from './style'
@@ -39,12 +40,21 @@ export default class Home extends React.Component {
     ]
   }
 
+  foooo = () => {
+    actions.games.getAll({
+      subset: 'allGames'
+    })
+  }
+
+
   render() {
     const { teamsData, gameData } = this.props
 
 
     return (
       <Center>
+        <button onClick={ this.foooo }>Foooooo!!!</button>
+
         <Indent pt={30} pb={50}>
           <TeamsPositionTable data={ teamsData } showMore />
 
