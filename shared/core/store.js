@@ -3,7 +3,7 @@ import actions from 'actions'
 
 
 const reducer = createReducer(actions)
-const initialState = { bar: 2 }
+const initialState = { foo: 'bar' }
 
 
 const store = createStore({

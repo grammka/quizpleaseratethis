@@ -11,6 +11,9 @@ const defaultEnhancers = [
 ]
 
 
+const devtools = typeof window !== 'undefined' && window.devToolsExtension ? window.devToolsExtension() : (v) => v
+
+
 export default ({ reducer, initialState = {}, middlewares = [], enhancers = [] }) => {
 
   const finalMiddlewares = [
@@ -20,7 +23,8 @@ export default ({ reducer, initialState = {}, middlewares = [], enhancers = [] }
 
   const finalEnhancers = [
     ...defaultEnhancers,
-    ...enhancers
+    ...enhancers,
+    devtools,
   ]
 
   const store = createStore(

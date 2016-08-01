@@ -1,12 +1,17 @@
 import { createAction } from 'redact'
 
 
-export const getAll = createAction.request({
-  ednpoint: 'http://brainapi.ru/quizplease/games',
+export const list = createAction.request({
+  endpoint: 'http://localhost:3030/quizplease/games',
   method: 'GET'
 })
 
-export const create = createAction({
-  ednpoint: 'http://brainapi.ru/quizplease/games',
+export const get = createAction.request({
+  endpoint: ({ gameId }) => `http://localhost:3030/quizplease/games/${gameId}`,
+  method: 'GET'
+})
+
+export const create = createAction.request({
+  endpoint: 'http://localhost:3030/quizplease/games',
   method: 'POST'
 })
