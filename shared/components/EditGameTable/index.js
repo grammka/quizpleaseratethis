@@ -1,6 +1,10 @@
 import React from 'react'
+import update from 'react/lib/update'
 import ValueLink from 'valuelink'
 import { Flex, Box } from 'reflexbox'
+import actions from 'core/actions'
+import { connect } from 'react-redux'
+import { Icon } from 'react-fa'
 
 import CSSModules from 'react-css-modules'
 import style from './style'
@@ -8,43 +12,101 @@ import style from './style'
 import Select from 'react-select'
 import Input from 'components/Input'
 import Indent from 'components/Indent'
-import Button from 'components/Button'
+//import Button from 'components/Button'
+import Button from '@compowombo/button'
 
 
+@connect((state) => {
+  const result = {}
+
+  if (state.teams && state.teams.list && state.teams.list.data) {
+    result.teams = state.teams.list.data.map(({ id, name }) => ({ value: id, label: name }))
+  }
+
+  return result
+})
 @CSSModules(style)
 export default class EditGameTable extends React.Component {
   static defaultProps = {
-    titles: [ '', 'Команда', 'Раунд 1', 'Раунд 2', 'Раунд 3', 'Раунд 4', 'Раунд 5', 'Раунд 6', 'Раунд 7', '' ],
-    selectOptions: [
-      { value: 1, label: 'Team 1' },
-      { value: 2, label: 'Team 2' },
-      { value: 3, label: 'Team 3' },
-      { value: 4, label: 'Team 4' },
-      { value: 5, label: 'Team 5' },
-      { value: 6, label: 'Team 6' },
-    ]
+    rowEntity: {
+      teamId: null,
+      rounds: [
+        { score: '' },
+        { score: '' },
+        { score: '' },
+        { score: '' },
+        { score: '' },
+        { score: '' },
+        { score: '' },
+      ]
+    }
   }
+
+  // static defaultProps = {
+  //   teamsData: [
+  //     { name: 'Foo', rank: 'генералы', playedGamesCnt: 18, pointsSum: 345, pointsAvg: 45, winPercent: 93 },
+  //     { name: 'Foo', rank: 'генералы', playedGamesCnt: 18, pointsSum: 345, pointsAvg: 45, winPercent: 93 },
+  //     { name: 'Foo', rank: 'генералы', playedGamesCnt: 18, pointsSum: 345, pointsAvg: 45, winPercent: 93 }
+  //   ],
+  //   gameData: [
+  //     [1, 'Foo', 1, 2, 3, 4, 5, 6, 7, 100],
+  //     [1, 'Foo', 1, 2, 3, 4, 5, 6, 7, 100],
+  //     [1, 'Foo', 1, 2, 3, 4, 5, 6, 7, 100]
+  //   ]
+  // }
 
   constructor(props) {
     super()
 
     this.state = {
-      team: null,
-      username: ''
+      rows: [ props.rowEntity ]
     }
+  }
+
+  componentWillMount() {
+    actions.teams.list({
+      subset: 'list'
+    })
   }
 
   handleSelectTeam = () => {
 
   }
 
+  addRow = () => {
+    const { rows } = this.state
+    const { rowEntity } = this.props
+    
+    this.setState({
+      rows: update(rows, {
+        $unshift: [ rowEntity ]
+      })
+    })
+  }
+
+  removeRow = (index) => {
+    const { rows } = this.state
+
+    this.setState({
+      rows: update(rows, {
+        $splice: [[ index, 1 ]]
+      })
+    })
+  }
+
+  addNewTeam = () => {
+    console.log(3333)
+  }
+
 
   render() {
-    const { team } = this.state
-    const { titles, selectOptions } = this.props
+    const { rows } = this.state
+    const { teams } = this.props
 
-    const linked = ValueLink.all(this, 'team', 'username')
 
+    if (!teams) {
+      return
+    }
 
     return (
       <div>
@@ -52,41 +114,52 @@ export default class EditGameTable extends React.Component {
         <div styleName="tableContainer">
           <table styleName="table">
             <thead>
-            <tr>
-              {
-                titles.map((item, index) => {
-                  return (
-                    <th key={ index }>{ item }</th>
-                  )
-                })
-              }
-            </tr>
+              <tr>
+                <th>
+                  <Flex align="center">
+                    <Box>{ 'Название команды' }</Box>
+                    <Box>
+                      <Icon styleName="addTeamIcon" name="plus-square" onClick={ this.addNewTeam } />
+                    </Box>
+                  </Flex>
+                </th>
+                {
+                  [1,2,3,4,5,6,7].map((item, index) => (
+                    <th key={ index }>{ `Раунд ${item}` }</th>
+                  ))
+                }
+                <th></th>
+              </tr>
             </thead>
             <tbody>
               {
-                [1,2,3,4].map((itemData, index) => {
+                rows.map((row, rowIndex) => {
+                  const { teamId, rounds } = row
+                  const teamIdLink = ValueLink.state(this, 'rows').at(rowIndex).at('teamId')
+
                   return (
-                    <tr key={ index }>
-                      <td></td>
+                    <tr key={ rowIndex }>
                       <td width="180px">
                         <Select
                           name="team"
-                          value={ team }
+                          value={ teamIdLink.value }
                           clearable={ false }
-                          options={ selectOptions }
-                          onChange={ ::linked.team.set }
+                          options={ teams }
+                          onChange={ ::teamIdLink.set }
                         />
                       </td>
                       {
-                        [1,2,3,4,5,6,7].map((value, index) => {
+                        rounds.map(({ score }, roundIndex) => {
+                          const scoreLink = ValueLink.state(this, 'rows').at(rowIndex).at('rounds').at(roundIndex).at('score')
+
                           return (
-                            <td key={ index }>
+                            <td key={ roundIndex }>
                               <Input
                                 styleName="input"
                                 h={30}
                                 type="text"
                                 name="username"
-                                valueLink={ linked.username }
+                                valueLink={ scoreLink }
                               />
                             </td>
                           )
@@ -94,7 +167,7 @@ export default class EditGameTable extends React.Component {
                       }
                       <td>
                         <Indent px={5}>
-                          <Button red h={30}>&times;</Button>
+                          <Icon styleName="removeRowIcon" name="trash" onClick={ () => this.removeRow(rowIndex) } />
                         </Indent>
                       </td>
                     </tr>
@@ -104,15 +177,28 @@ export default class EditGameTable extends React.Component {
             </tbody>
           </table>
         </div>
+
         <Indent mt={8}>
-          <Flex
-            justify="flex-end"
-          >
+          <Flex justify="space-between">
             <Box>
-              <Button green h={30}>{ 'Сохранить' }</Button>
+              <Flex>
+                <Box mr={1}>
+                  1111
+                </Box>
+                <Box>
+                  <Button success h={30} onClick={ this.addRow }>{ 'Добавить строку' }</Button>
+                </Box>
+              </Flex>
             </Box>
-            <Box pl={1}>
-              <Button red h={30}>{ 'Отмена' }</Button>
+            <Box>
+              <Flex>
+                <Box>
+                  <Button success h={24}>{ 'Сохранить' }</Button>
+                </Box>
+                <Box ml={1}>
+                  <Button danger h={24}>{ 'Отмена' }</Button>
+                </Box>
+              </Flex>
             </Box>
           </Flex>
         </Indent>

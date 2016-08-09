@@ -4,6 +4,7 @@ import { Router, browserHistory } from 'react-router'
 import { Provider } from 'react-redux'
 import routes from 'routes'
 import store from 'core/store'
+import actions from 'core/actions'
 
 import 'react-select/dist/react-select.css'
 import 'normalize.css/normalize.css'

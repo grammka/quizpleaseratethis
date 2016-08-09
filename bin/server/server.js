@@ -14,9 +14,9 @@ const app = express()
 if (isDeveloping) {
   const compiler = webpack(config)
   const middleware = webpackMiddleware(compiler, {
+    //contentBase: path.resolve(__dirname, '../../client/assets'),
     //historyApiFallback: true,
     publicPath: config.output.publicPath,
-    contentBase: path.resolve(__dirname, '../../client/assets'),
     stats: {
       colors: true,
       hash: false,

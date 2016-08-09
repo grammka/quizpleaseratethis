@@ -24,14 +24,15 @@ $game-td-border-color       = #dce3ea
       &:nth-child(even)
         background-color: #F7F9FA
       &:last-child
-      	td
+        td
           &:first-child
-          	border-radius 0 0 0 3px
+            border-radius 0 0 0 3px
           &:last-child
             border-radius 0 0 3px 0
   td, th
     border-left 1px solid $game-td-border-color
     vertical-align middle
+    text-align: center
     &:first-child
       border-left: 0
     &:nth-child(2)
@@ -51,33 +52,3 @@ $game-td-border-color       = #dce3ea
   background: none !important
   border 0 !important
   text-align: center !important
-
-
-.addTeamIcon
-  margin-left 15px
-  cursor: pointer
-  font-size: 20px
-  color $color_green
-
-.removeRowIcon
-  margin 0 10px
-  cursor: pointer
-  font-size: 20px
-  color $color_red
-
-.showMore
-  display: block
-  line-height: 40px
-  background-color: #e2e8ef
-  border-top: 1px solid #c2ccd8
-  cursor: pointer
-  font-size: 16px
-  font-weight: 600
-  text-align: center
-  color #a1acb9
-  text-transform: uppercase
-  text-decoration: none !important
-  border-radius bottom 3px
-  &:hover
-    background-color: darken(#e2e8ef, 3%)
-    color darken(#a1acb9, 10%)

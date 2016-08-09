@@ -1,7 +1,8 @@
 import { createAction } from 'redact'
+import { services } from 'config'
 
 
-export const getAll = createAction.request({
-  ednpoint: 'http://brainapi.ru/quizplease/teams',
-  method: 'GET'
+export const list = createAction({
+  endpoint: `${services.api}/quizplease/teams`,
+  method: 'GET',
 })

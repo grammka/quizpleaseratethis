@@ -1,13 +1,13 @@
-import { createStore, createReducer } from 'redact'
+import { createStore, createReducers } from 'redact'
 import actions from 'actions'
 
 
-const reducer = createReducer(actions)
-const initialState = { foo: 'bar' }
+const reducers = createReducers(actions)
+const initialState = {}
 
 
 const store = createStore({
-  reducer,
+  reducers,
   initialState
 })
 

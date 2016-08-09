@@ -1,27 +1,35 @@
+import path from 'path'
+
 export default [
   {
     test   : /\.(png|ico|jpg|jpeg|gif|svg(\?.*)?)$/,
-    loader : 'url?name=[path][name].[ext]'
+    loader : 'file',
+    query: {
+      context: path.join(__dirname, '../../build'),
+      name: '[name].[ext]'
+    }
   }
 ]
 
+
+// import path from 'path'
+//
+//
+// const query = {
+//   context: path.join(__dirname, '../../build'),
+//   name: 'images/[ext]/[name]_[hash:6].[ext]',
+// }
 //
 // export default [
 //   {
 //     test: /\.(png|ico|jpg|jpeg|gif)$/,
-//     loader: 'url',
-//     query: {
-//       name: 'assets/[ext]/[name].[hash:6].[ext]',
-//       limit: 8192
-//     }
+//     loader: 'file',
+//     query
 //   },
 //   {
 //     test: /\.svg(\?.*)?$/,
-//     loader: 'url',
-//     query: {
-//       name: 'assets/[ext]/[name].[hash:6].[ext]',
-//       limit: 10000,
-//       mimetype: 'image/svg+xml'
-//     }
-//   }
+//     loader: 'file',
+//     query
+//   },
 // ]
+

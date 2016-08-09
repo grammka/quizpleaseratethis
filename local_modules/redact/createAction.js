@@ -26,18 +26,9 @@ const mergeOptions = (defaults, opt) => {
   return options
 }
 
-const createAction = (options = {}) => {
-  const action = (dispatch) => (payload) => {
-    dispatch({ meta: options, payload })
-  }
 
-  action.type = 'reducerAction'
-
-  return action
-}
-
-createAction.request = (defaults = {}) => {
-  const action = (dispatch) => (opts = {}) => {
+const createRequestAction = (defaults = {}) => {
+  let action = (dispatch) => (opts = {}) => {
     const options = mergeOptions(defaults, opts)
 
     sendRequest({ options, dispatch })
@@ -46,6 +37,27 @@ createAction.request = (defaults = {}) => {
   action.type = 'apiAction'
 
   return action
+}
+
+const createReducerAction = (reducer) => {
+  let action = (dispatch) => (payload) => dispatch({ reducer, payload })
+
+  action.type = 'reducerAction'
+
+  return action
+}
+
+
+const createAction = (config) => {
+  if (typeof config == 'object') {
+    return createRequestAction(config)
+  }
+  else if (typeof config == 'function') {
+    return createReducerAction(config)
+  }
+  else {
+    throw Error('Redbox: Passed wrong config type to createAction')
+  }
 }
 
 

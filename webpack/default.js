@@ -63,7 +63,7 @@ module.exports = {
       chunks: {
         app: {
           entry: paths.client,
-          logo: ['assets/images/icon.png']
+          logo: [ 'assets/images/icon.png' ]
         }
       }
     }
