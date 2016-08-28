@@ -3,10 +3,10 @@ import path from 'path'
 export default [
   {
     test   : /\.(png|ico|jpg|jpeg|gif|svg(\?.*)?)$/,
-    loader : 'file',
+    loader : 'url',
     query: {
       context: path.join(__dirname, '../../build'),
-      name: '[name].[ext]'
+      name: 'images/[name].[ext]'
     }
   }
 ]

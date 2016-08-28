@@ -19,8 +19,8 @@ const loaders = [].concat.apply([], Object.keys(lFolder).map((k) => lFolder[k]))
 
 
 module.exports = {
-  devtool: 'eval',
-  //devtool: 'cheap-module-source-map',
+  //devtool: 'eval',
+  devtool: 'cheap-module-source-map',
 
   entry: [
     paths.client

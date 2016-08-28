@@ -3,8 +3,12 @@ import update from 'react/lib/update'
 import ValueLink from 'valuelink'
 import { Flex, Box } from 'reflexbox'
 import actions from 'core/actions'
+import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import { Icon } from 'react-fa'
+import moment from 'moment'
+import debounce from 'debounce'
+import notify from 'react-notify-me'
 
 import CSSModules from 'react-css-modules'
 import style from './style'
@@ -12,8 +16,8 @@ import style from './style'
 import Select from 'react-select'
 import Input from 'components/Input'
 import Indent from 'components/Indent'
-//import Button from 'components/Button'
-import Button from '@compowombo/button'
+import DatePicker from 'components/DatePicker'
+import Button from '@wombocompo/button'
 
 
 @connect((state) => {
@@ -29,7 +33,7 @@ import Button from '@compowombo/button'
 export default class EditGameTable extends React.Component {
   static defaultProps = {
     rowEntity: {
-      teamId: null,
+      team: null,
       rounds: [
         { score: '' },
         { score: '' },
@@ -42,24 +46,16 @@ export default class EditGameTable extends React.Component {
     }
   }
 
-  // static defaultProps = {
-  //   teamsData: [
-  //     { name: 'Foo', rank: 'генералы', playedGamesCnt: 18, pointsSum: 345, pointsAvg: 45, winPercent: 93 },
-  //     { name: 'Foo', rank: 'генералы', playedGamesCnt: 18, pointsSum: 345, pointsAvg: 45, winPercent: 93 },
-  //     { name: 'Foo', rank: 'генералы', playedGamesCnt: 18, pointsSum: 345, pointsAvg: 45, winPercent: 93 }
-  //   ],
-  //   gameData: [
-  //     [1, 'Foo', 1, 2, 3, 4, 5, 6, 7, 100],
-  //     [1, 'Foo', 1, 2, 3, 4, 5, 6, 7, 100],
-  //     [1, 'Foo', 1, 2, 3, 4, 5, 6, 7, 100]
-  //   ]
-  // }
-
-  constructor(props) {
+  constructor({ rowEntity, data }) {
     super()
 
+    this.selectedTeams = data && data.rows.map(({ team }) => team.label) || []
+    this.dirtyData = []
+
     this.state = {
-      rows: [ props.rowEntity ]
+      id: data && data.id || null,
+      createdAt: data && moment(data.createdAt) || null,
+      rows: data && data.rows || [ rowEntity ],
     }
   }
 
@@ -67,10 +63,6 @@ export default class EditGameTable extends React.Component {
     actions.teams.list({
       subset: 'list'
     })
-  }
-
-  handleSelectTeam = () => {
-
   }
 
   addRow = () => {
@@ -94,14 +86,116 @@ export default class EditGameTable extends React.Component {
     })
   }
 
-  addNewTeam = () => {
-    console.log(3333)
+  filterOptions = (options, filter) => {
+    let filteredOptions = options.filter((option) => this.selectedTeams.indexOf(option.label) < 0)
+
+    // Filter by label
+    if (filter !== undefined && filter != null && filter.length > 0) {
+      filteredOptions = filteredOptions.filter((option) => RegExp(filter, 'ig').test(option.label))
+
+      // Append Addition option
+      if (filteredOptions.length != 1) {
+        filteredOptions.push({
+          label:  <span><Icon className={ style.addTeamIcon } name="plus" /> { filter }</span>,
+          value:  filter,
+          create: true,
+        })
+      }
+    }
+
+    return filteredOptions
+  }
+
+  // updateScore = debounce((score, value) => {
+  //   actions.score.update({
+  //     params: {
+  //       scoreId: score.id
+  //     },
+  //     body: {
+  //       score: value
+  //     },
+  //     onResponse: () => {
+  //       notify({
+  //         content: 'Изменения сохранены',
+  //         type: 'success'
+  //       })
+  //     }
+  //   })
+  // }, 500)
+
+  addDirty = (score, value) => {
+    score.dirty = true
+  }
+
+  submit = async (event) => {
+    event.preventDefault()
+
+    let { id, createdAt, rows } = this.state
+
+    rows = await Promise.all(rows.map((row) => {
+      return new Promise((fulfill) => {
+        if (row.team.create) {
+          actions.teams.create({
+            body: {
+              name: row.team.value
+            },
+            onResponse: ({ body }) => {
+              row.team = {
+                label: body.name,
+                value: body.id
+              }
+
+              fulfill(row)
+            }
+          })
+        } else {
+          fulfill(row)
+        }
+      })
+    }))
+
+    rows = rows.map(({ team, rounds }) => ({
+      teamId: team.value,
+      rounds
+    }))
+
+    if (id) {
+      const score = [].concat.apply([], rows.map(({ rounds }) => rounds.filter(({ dirty }) => dirty)))
+
+      actions.games.update({
+        params: {
+          gameId: id
+        },
+        body: {
+          id,
+          createdAt: createdAt.format(),
+          score
+        },
+        onResponse: () => {
+          notify({
+            content: 'Изменения сохранены',
+            type: 'success'
+          })
+        }
+      })
+    }
+    else {
+      actions.games.create({
+        body: {
+          createdAt: createdAt.format(),
+          rows
+        }
+      })
+    }
   }
 
 
   render() {
-    const { rows } = this.state
+    const { id: gameId, createdAt, rows }  = this.state
     const { teams } = this.props
+
+    const createdAtLink   = ValueLink.state(this, 'createdAt')
+    const editing         = !!gameId
 
 
     if (!teams) {
@@ -109,47 +203,52 @@ export default class EditGameTable extends React.Component {
     }
 
     return (
-      <div>
-        <div styleName="title">{ '21 Игра | 12.08.16' }</div>
+      <form onSubmit={ this.submit }>
+        <div styleName="title">
+          <DatePicker
+            initValue={ createdAt }
+            valueLink={ createdAtLink }
+          />
+        </div>
         <div styleName="tableContainer">
           <table styleName="table">
             <thead>
               <tr>
-                <th>
-                  <Flex align="center">
-                    <Box>{ 'Название команды' }</Box>
-                    <Box>
-                      <Icon styleName="addTeamIcon" name="plus-square" onClick={ this.addNewTeam } />
-                    </Box>
-                  </Flex>
-                </th>
+                <th>{ 'Название команды' }</th>
                 {
                   [1,2,3,4,5,6,7].map((item, index) => (
                     <th key={ index }>{ `Раунд ${item}` }</th>
                   ))
                 }
-                <th></th>
+                <th>{ 'Итого' }</th>
+                {
+                  !editing && (
+                    <th></th>
+                  )
+                }
               </tr>
             </thead>
             <tbody>
               {
                 rows.map((row, rowIndex) => {
-                  const { teamId, rounds } = row
-                  const teamIdLink = ValueLink.state(this, 'rows').at(rowIndex).at('teamId')
+                  const { team, rounds } = row
+                  const teamLink = ValueLink.state(this, 'rows').at(rowIndex).at('team')
 
                   return (
                     <tr key={ rowIndex }>
                       <td width="180px">
                         <Select
                           name="team"
-                          value={ teamIdLink.value }
-                          clearable={ false }
+                          value={ teamLink.value }
                           options={ teams }
-                          onChange={ ::teamIdLink.set }
+                          clearable={ false }
+                          noResultsText={ false }
+                          filterOptions={ this.filterOptions }
+                          onChange={ ::teamLink.set }
                         />
                       </td>
                       {
-                        rounds.map(({ score }, roundIndex) => {
+                        rounds.map((score, roundIndex) => {
                           const scoreLink = ValueLink.state(this, 'rows').at(rowIndex).at('rounds').at(roundIndex).at('score')
 
                           return (
@@ -159,17 +258,24 @@ export default class EditGameTable extends React.Component {
                                 h={30}
                                 type="text"
                                 name="username"
-                                valueLink={ scoreLink }
+                                valueLink={ scoreLink.onChange((value) => editing && this.addDirty(score, value)) }
                               />
                             </td>
                           )
                         })
                       }
                       <td>
-                        <Indent px={5}>
-                          <Icon styleName="removeRowIcon" name="trash" onClick={ () => this.removeRow(rowIndex) } />
-                        </Indent>
+                        { rounds.reduce((sum, { score }) => sum + +(score || 0), 0) }
                       </td>
+                      {
+                        !editing && (
+                          <td>
+                            <Indent px={5}>
+                              <Icon styleName="removeRowIcon" name="trash" onClick={ () => this.removeRow(rowIndex) } />
+                            </Indent>
+                          </td>
+                        )
+                      }
                     </tr>
                   )
                 })
@@ -178,31 +284,31 @@ export default class EditGameTable extends React.Component {
           </table>
         </div>
 
-        <Indent mt={8}>
+        <div styleName="footer">
           <Flex justify="space-between">
             <Box>
               <Flex>
-                <Box mr={1}>
-                  1111
-                </Box>
                 <Box>
-                  <Button success h={30} onClick={ this.addRow }>{ 'Добавить строку' }</Button>
+                  <Button success h={24} onClick={ this.addRow }>{ 'Добавить строку' }</Button>
                 </Box>
               </Flex>
             </Box>
             <Box>
               <Flex>
                 <Box>
-                  <Button success h={24}>{ 'Сохранить' }</Button>
+                  <Button type="submit" success h={24}>{ 'Сохранить' }</Button>
                 </Box>
                 <Box ml={1}>
-                  <Button danger h={24}>{ 'Отмена' }</Button>
+                  <Link to="/">
+                    <Button danger h={24}>{ 'Отмена' }</Button>
+                  </Link>
                 </Box>
               </Flex>
             </Box>
           </Flex>
-        </Indent>
-      </div>
+        </div>
+
+      </form>
     )
   }
 }

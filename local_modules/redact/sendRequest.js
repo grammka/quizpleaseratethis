@@ -64,10 +64,10 @@ const sendRequest = ({ options, dispatch }) => {
     req.withCredentials()
   }
 
-  // if (options.token) {
-  //   req.set({ Authorization: `Bearer ${options.token}` })
-  // }
-  //
+  if (options.token) {
+    req.set({ Authorization: `Bearer ${options.token}` })
+  }
+
   // if (options.getToken) {
   //   const token = options.getToken(getState())
   //   if (token) {

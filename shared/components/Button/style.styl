@@ -1,38 +1,13 @@
-.button
-  border 0
-  cursor: pointer
-  font-family: GothamPro-Medium
-  text-decoration: none
-  text-transform: uppercase
-  text-align: center
-  color: #fff
-  border-radius: 2px
-  display-inline-block()
-  &.orange
-    background-color: $color_orange1
+$styles = primary success info warning danger
+$colors = #167bd4 #46d600 #299afb #ffa319 #e21736
+
+
+for style, index in $styles
+  $color = $colors[index]
+  .{style}
+    background-color $color
+    color darken($color, 85%)
     &:hover
-      background-color: darken($color_orange1, 7%)
-  &.green
-    background-color: $color_green
-    &:hover
-      background-color: darken($color_green, 7%)
-  &.red
-    background-color: $color_red
-    &:hover
-      background-color: darken($color_red, 7%)
-  &.blue
-    background-color: $color_blue_darken
-    &:hover
-      background-color: darken($color_blue_darken, 7%)
-  &.h30
-    line-height: 30px
-    padding 0 15px
-    font-size: 14px
-  &.h40
-    line-height: 40px
-    padding 0 17px
-    font-size: 15px
-  &.h50
-    line-height: 50px
-    padding 0 19px
-    font-size: 16px
+      background-color darken($colors[index], 5%)
+    &:active
+      background-color darken($colors[index], 10%)

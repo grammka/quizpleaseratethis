@@ -1,6 +1,4 @@
 import React from 'react'
-import actions from 'core/actions'
-import { connect } from 'react-redux'
 
 import CSSModules from 'react-css-modules'
 import style from './style'
@@ -13,11 +11,8 @@ import EditGameTable from 'components/EditGameTable'
 @CSSModules(style)
 export default class CreateGame extends React.Component {
   render() {
-    const {  } = this.props
-
-
     return (
-      <Center>
+      <Center maxWidth={900}>
         <Indent pt={30} pb={50}>
           <EditGameTable />
         </Indent>

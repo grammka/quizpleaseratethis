@@ -1,9 +1,14 @@
 import React from 'react'
 import isMobile from 'isMobile'
 import actions from 'core/actions'
+import { Notifications } from 'react-notify-me'
 
 
 export default class Root extends React.Component {
+  componentWillMount() {
+    actions.users.getCurrent()
+  }
+
   componentDidMount() {
     console.debug('actions: ', actions)
 
@@ -14,7 +19,10 @@ export default class Root extends React.Component {
 
   render() {
     return (
-      <div>{ this.props.children }</div>
+      <div>
+        { this.props.children }
+        <Notifications config={{ autoDismiss: 2000, position: 'bottomRight' }} />
+      </div>
     )
   }
 }

@@ -56,9 +56,9 @@ const apiAction = (state = {}, { type, meta, payload }) => {
     if (typeof error != 'undefined') {
       newState[meta.subset].error = error
     }
-
-    return newState
   }
+
+  return newState
 }
 
 export default apiAction

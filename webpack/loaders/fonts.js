@@ -3,7 +3,7 @@ import path from 'path'
 
 const filename = {
   context: path.join(__dirname, '../../build'),
-  name: 'fonts/[ext]/[name].[ext]',
+  name: 'fonts/[name].[ext]',
 }
 
 export default [

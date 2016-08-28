@@ -9,11 +9,14 @@ import Center from 'components/Center'
 import Indent from 'components/Indent'
 import TeamsPositionTable from 'components/TeamsPositionTable'
 import GameTable from 'components/GameTable'
-import EditGameTable from 'components/EditGameTable'
+
+import Header from './Header'
 
 
 @connect((state) => {
   const result = {}
+
+  result.loggedIn = state.users.me && state.users.me.data
 
   if (state.games && state.games.list && state.games.list.data) {
     result.games = state.games.list.data.map((game) => {
@@ -30,8 +33,9 @@ import EditGameTable from 'components/EditGameTable'
       })
 
       return {
+        id: game.id,
         name: game.name,
-        created: game.created,
+        createdAt: game.createdAt,
         data
       }
     })
@@ -49,7 +53,7 @@ export default class Home extends React.Component {
 
 
   render() {
-    const { teamsData, gameData, games } = this.props
+    const { loggedIn, games } = this.props
 
 
     if (!games) {
@@ -57,23 +61,33 @@ export default class Home extends React.Component {
     }
 
     return (
-      <Center>
-        <Indent pt={30} pb={50}>
-          {/* <TeamsPositionTable data={ teamsData } showMore /> */}
+      <div>
+        {
+          loggedIn && (
+            <Header />
+          )
+        }
 
-          <Indent mt={40}>
-            {
-              games.map((game, index) => {
-                return (
-                  <Indent key={ index } mt={ index && 40 }>
-                    <GameTable { ...game } />
-                  </Indent>
-                )
-              })
-            }
+        <Center>
+          <Indent pt={30} pb={50}>
+            {/* <TeamsPositionTable data={ teamsData } showMore /> */}
+
+            <Indent mt={40}>
+              {
+                games.map((game, index) => {
+                  const title = `Игра ${ games.length - index }`
+
+                  return (
+                    <Indent key={ index } mt={ index && 40 }>
+                      <GameTable { ...game } title={title} />
+                    </Indent>
+                  )
+                })
+              }
+            </Indent>
           </Indent>
-        </Indent>
-      </Center>
+        </Center>
+      </div>
     )
   }
 }

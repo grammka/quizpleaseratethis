@@ -3,13 +3,13 @@ $game-td-border-color       = #dce3ea
 
 
 .title
-  margin-bottom: 20px
-  font-size: 26px
+  margin-bottom: 12px
+  font-size: 22px
   color #bddcfd
 
 .tableContainer
   background-color: #fff
-  border-radius 3px
+  border-radius top 3px
   box-shadow rgba(13, 44, 74, 0.25) 0 0 0 1px, rgba(13, 44, 74, 0.14) 0 1px 0 1px
 
 .table
@@ -32,20 +32,25 @@ $game-td-border-color       = #dce3ea
   td, th
     border-left 1px solid $game-td-border-color
     vertical-align middle
+    text-align: center
     &:first-child
-      border-left: 0
-    &:nth-child(2)
       text-align: left
+      border-left: 0
   th
     border-bottom: 1px solid $game-td-border-color
     padding 10px
     font-weight: 600
+    white-space: nowrap
   td
     line-height: 15px
   :global(.Select-control)
     background: none !important
     border 0 !important
     box-shadow none !important
+    & input
+      line-height: 16px
+    & :global(.fa)
+      display: none !important
 
 .input
   background: none !important
@@ -54,30 +59,24 @@ $game-td-border-color       = #dce3ea
 
 
 .addTeamIcon
-  margin-left 15px
-  cursor: pointer
-  font-size: 20px
-  color $color_green
+  size 16px
+  line-height: 18px
+  background-color: $color_green
+  margin-right: 6px
+  text-align: center
+  font-size: 11px
+  color #fff
+  display-inline-block()
 
 .removeRowIcon
   margin 0 10px
   cursor: pointer
-  font-size: 20px
+  font-size: 17px
   color $color_red
 
-.showMore
+.footer
   display: block
-  line-height: 40px
   background-color: #e2e8ef
   border-top: 1px solid #c2ccd8
-  cursor: pointer
-  font-size: 16px
-  font-weight: 600
-  text-align: center
-  color #a1acb9
-  text-transform: uppercase
-  text-decoration: none !important
+  padding 5px
   border-radius bottom 3px
-  &:hover
-    background-color: darken(#e2e8ef, 3%)
-    color darken(#a1acb9, 10%)

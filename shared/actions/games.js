@@ -16,3 +16,8 @@ export const create = createAction({
   endpoint: `${services.api}/quizplease/games`,
   method: 'POST',
 })
+
+export const update = createAction({
+  endpoint: ({ gameId }) => `${services.api}/quizplease/games/${gameId}`,
+  method: 'PUT',
+})
